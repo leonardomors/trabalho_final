@@ -1,0 +1,67 @@
+#:kivy 1.11.1
+
+<ModbusPopup>:
+    title: "Conexão"
+    size_hint_y: None
+    size_hint_x: 0.4
+    height: 200
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        GridLayout:
+            cols: 2
+            rows: 2
+            Label:
+                text: "IP"
+                font_size: 14
+            TextInput:
+                id: txt_ip
+                text: "127.0.0.1"
+                font_size: 14
+                halign: 'center'
+                valign: 'middle'
+            Label:
+                text: "Porta"
+                font_size: 14
+            TextInput:
+                id: txt_port
+                text: "502"
+                font_size: 14
+                halign: 'center'
+                valign: 'middle'
+        BoxLayout:
+            orientation:'horizontal'
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Conectar'
+                on_release:
+                    
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'FECHAR'
+                on_release:
+
+<ScanPopup>:
+    title: "SCAN TIME"
+    size_hint_y: None
+    size_hint_x: 0.4
+    height: 150
+    BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                id:lbl_scan
+                text: 'Scan time [ms]: '
+                font_size: 14
+            TextInput:
+                id: ti_scan
+                text: ''
+                valign: 'middle'
+                halign: 'center'
+        Button:
+            text:'ATUALIZAR'
+
+                    
