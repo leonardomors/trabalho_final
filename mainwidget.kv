@@ -1,231 +1,123 @@
 #:kivy 1.11.1
+
 <MainWidget>:
-
+    orientation: 'vertical'
+    canvas: 
+        Color:
+            rgb: 0.5, 0.5, 0.5
+        Rectangle:
+            size: self.size
+    
     BoxLayout:
-        orientation: 'vertical'
-        canvas:
-            Color:
-                rgb: 0.5,0.5,0.5
-            Rectangle:
-                size: self.size
+        orientation: 'horizontal'
+        size_hint: (1,0.1)
+        spacing: 10
+        Label:
+            text: "SUPERVISORIO REFINARIA v1.0"
+            size_hint_x: None
+            width: 300
         BoxLayout:
-            orientation:'horizontal'
-            size_hint: (1,0.1)
-            spacing: 10
-            canvas:
-                Color:
-                    rgb: 0,0,0
-                Rectangle:
-                    size: self.size
-            Image:
-                source: 'imgs/eng_eletrica.png'
-                size_hint:(0.15,1)
-                haling: 'center'
-                valign: 'top'
-
-
+            orientation: 'vertical'
+            size_hint_x: None
+            width: 400
             Label:
-                text: 'SUPERVISORIO TRABALHO FINAL'
-                font_size: 25
-                size_hint: (0.8,1)
-                halign: 'center'
-                valign: 'middle'
-                markup: True
-                color: 0,0,0,1
-                
+                text: "Configuration"
             BoxLayout:
-                orientation:'vertical'
-                size_hint:(0.3,1)
+                orientation: 'horizontal'
                 Button:
-                    text: 'Sincronizar horário'
-                    font_size: 15
-                    markup: True
-                    on_release:
-                        root.atualizar_hora()
-                Label:
-                    id:txt_hora
-                    text: ""
-
-            BoxLayout:
-                orientation:'vertical'
-                size_hint_x: None
-                self_hint: (0.2,1)
-                Button:
-                    text: 'Conexao'
+                    text: "MODBUS" 
                     on_release: root._modbusPopup.open()
                 Button:
-                    text: 'ScanTime'
+                    text: 'Scan Time'
                     on_release: root._scanPopup.open()
-            Image:
-                size_hint: (0.1,1)
-                id: img_com
-                source: 'imgs/desconectado.png'
-
-        BoxLayout:
-            orientation: 'horizontal'
-            BoxLayout:
-                orientation:'vertical'
-                size_hint: (0.65, 1)
-                canvas:
-                    Color:
-                        rgb: 1,1,1
-                    Rectangle:
-                        size: self.size
-
-                Image:
-                    source: 'imgs/modelo2.png'
-                    size_hint: (1,0.85)
-                    valign: 'top'
-                BoxLayout:
-                    canvas:
-                        Color:
-                            rgb: 0,0,0
-                        Rectangle:
-                            size: self.size
-                    spacing: 25
-                    orientation:'horizontal'
-                    size_hint: (1, 0.1)
-                    valign: 'middle'
-                    BoxLayout:
-                        size_hint: (0.2, 1)
-                        orientation:'vertical'
-                        Label:
-                            text: 'Solenoide 1'
-                            markup: True
-                            font_size: 15
-                        Button:
-                            id: btn_sol1
-                            background_normal:'imgs/botao_off.PNG'
-                            backgroung_down: 'imgs/botao_off.PNG'
-                            on_release:
-                                root.atualiza_botao(self)
-                    BoxLayout:
-                        size_hint: (0.2, 1)
-                        orientation:'vertical'
-                        Label:
-                            text: 'Solenoide 2'
-                            markup: True
-                            font_size: 15
-                        Button:
-                            id: btn_sol2
-                            background_normal:'imgs/botao_off.PNG'
-                            backgroung_down: 'imgs/botao_off.PNG'
-                            on_release:
-                                root.atualiza_botao(self)
-                            
-                    BoxLayout:
-                        size_hint: (0.2, 1)
-                        orientation:'vertical'
-                        Label:
-                            text: 'Solenoide 3'
-                            markup: True
-                            font_size: 15
-                        Button:
-                            id: btn_sol3
-                            background_normal:'imgs/botao_off.PNG'
-                            backgroung_down: 'imgs/botao_off.PNG'
-                            size: self.size
-                            on_release:
-                                root.atualiza_botao(self)
-                                
-                            
-                    BoxLayout:
-                        size_hint: (0.2, 1)
-                        orientation:'vertical'
-                        Label:
-                            text: 'Motor'
-                            markup: True
-                            font_size: 15
-                        Button:
-                            id: motor
-                            background_normal:'imgs/botao_off.PNG'
-                            backgroung_down: 'imgs/botao_off.PNG'
-                            size: self.size
-                            on_release:
-                                root.atualiza_botao(self)
-                    
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint: (0.35,1)
-                Button:
-                    text: 'Entradas digitais'
-                    size_hint:(1,0.1)
-                GridLayout:
-                    cols: 2
-                    rows: 6
-                    Label:
-                        text: 'ESTADO MOTOR'
-                    Image:
-                        id:led_motor
-                        source: 'imgs\led_vermelho.png'
-                        size: self.size
-                    Label:
-                        text: 'NIVEL_H'
-                    Image:
-                        id:led_nivelh
-                        source: 'imgs\led_vermelho.png'
-                        size:self.size
-                    Label:
-                        text: 'NIVEL_L'
-                    Image:
-                        id: led_nivell
-                        source: 'imgs\led_vermelho.png'
-                    Label:
-                        text: 'SOLENOIDE 1'
-                    Image:
-                        id: led_s1
-                        source: 'imgs\led_vermelho.png'
-                    Label:
-                        text: 'SOLENOIDE 2'
-                    Image:
-                        id: led_s2
-                        source: 'imgs\led_vermelho.png'
-                    Label:
-                        text: 'SOLENOIDE 3'
-                    Image:
-                        id: led_s3
-                        source: 'imgs\led_vermelho.png'
-
-                    
-                Button:
-                    text: 'Entradas analogicas'
-                    size_hint:(1,0.1)
-
-
-                Image:
-                    source: 'imgs\fundo_an.png'
-                    
-            
-                    
-                
+        Image:
+            id: img_com
+            size_hint_x: None
+            width: 80
+            source: 'imgs/desconectado.png'
+            pos_hint: {'top':1, 'right':1}
+    
+    FloatLayout:
+        canvas: 
+            Color:
+                rgb: 1, 1, 1
+            Rectangle:
+                size: self.size
+        Image:
+            source: 'imgs/Refinaria.png'
         
+        Label:
+            id:lb_temp
+            size_hint: (None, None)
+            size: (termometro.size[0]*0.25, termometro.size[1])
+            pos_hint:{'x': -0.06, 'y': 0.3}
+            canvas:
+                Color:
+                    rgb: 1,0,0
+                Rectangle:
+                    size: self.size
+                    pos: (self.pos[0]+self.width*1.5, self.pos[1])
+        Image:
+            id: termometro
+            source: 'imgs/termometro.png'
+            size_hint: 0.17, 0.17
+            pos_hint: lb_temp.pos_hint
 
-                    
-                    
-                    
-                    
-
-
-
-            
+        Button:
+            size_hint: (None,None)
+            size: (0.65*62,0.65*58)
+            background_normal: 'imgs/graph_icon.jpg'
+            backgroung_down: 'imgs/graph_icon.jpg'
+            pos_hint: {'x': 0.002, 'y': 0.22}
+            on_release:
+                root._graph.open()
                 
-                
 
 
-
+        Label:
+            id: fornalha
+            text: '-.- °C'
+            font_size: 25
+            bold: True
+            halign: 'center'
+            pos_hint: {'x': -0.45, 'y': 0.005}
+            color: 0,0,0,1
+        TempLabel:
+            id: gas_ref
+            pos_hint: {'x': 0.175,'y':0.28}
+        TempLabel:
+            id: gasolina
+            pos_hint: {'x': 0.175,'y':0.205}
+        TempLabel:
+            id: nafta
+            pos_hint: {'x': 0.175,'y':0.13}
+        TempLabel:
+            id: querosene
+            pos_hint: {'x': 0.175,'y':0.055}
+        TempLabel:
+            id: diesel
+            pos_hint: {'x': 0.175,'y':-0.02}
+        TempLabel:
+            id: oleo_lub
+            pos_hint: {'x': 0.175,'y':-0.095}
+        TempLabel:
+            id: oleo_comb
+            pos_hint: {'x': 0.175,'y':-0.17}
+        TempLabel:
+            id: residuos
+            pos_hint: {'x': 0.175,'y':-0.245}
+        Button:
+            text:'Dados historicos'
+            pos_hint: {'right': 1, 'down': 1}
+            size_hint: (0.2, 0.05)
+            on_release:
+                root._hgraph.open()
 
 
 
 <TempLabel@Label>:
-    text: '-.-'
+    text: '-.- ºC'
     font_size: 20
     bold: True
     halign: 'center'
-    color: 1,0,0,1
-
-
-
-
-            
-
-        
+    color: 0,0,0,1
