@@ -1,14 +1,15 @@
-from tkinter.messagebox import NO
+from time import sleep
 from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
 from popups import ModbusPopup, ScanPopup
-BOT = ["imgs/botao_off.PNG",'imgs/botao_on.PNG']
+BOT = ["imgs/s1.png",'imgs/s2.png']
 
 class MainWidget(BoxLayout):
     _updateThread = None
     _updateWidgt = True
+    _tags = []
 
     """
     Classe do widget principal da aplicacao
@@ -19,6 +20,7 @@ class MainWidget(BoxLayout):
         """
         Construtor do widget principal
         """
+        self._tags = {}
         super().__init__()
         self._scantime = kwargs.get('scantime')
         self._ip = kwargs.get('server_ip')
@@ -30,6 +32,9 @@ class MainWidget(BoxLayout):
         self._meas = {}
         self._meas['timestamp'] = None
         self._meas['values'] = {}
+        for key, value in kwargs.get('modbus_addrs').items():
+            self._tags[key] = {'info': value, 'color': [1,2,3]}
+        
 
     def atualizar_hora(self):
         hora = datetime.now()
@@ -53,7 +58,7 @@ class MainWidget(BoxLayout):
             self._modbusClient.open()
             print(self._modbusClient)
             if self._modbusClient.is_open:
-                self._updateThread = Thread(target=self.updater)
+                self._updateThread = Thread(target=self.update_widget)
                 self._updateThread.start()
                 print('conectado')
                 self._modbusPopup.dismiss()
@@ -65,14 +70,46 @@ class MainWidget(BoxLayout):
         except Exception as e:
             print('Erro na conexao: ', e.args)
         
-    def updater(self):
+    def update_widget(self):
+        """
+        atualizador
+        """
+        try:
+            while self._updateWidgt:
+                self.readData()
+                
+                # atualizar interface grafica
+                # inserir valores no BD
+                
+        except  Exception as e:
+            self._modbusClient.close()
+            print('Erro na atualizacao de widgt: ', e.args)
+        
+    
+
+
+        sleep(self._scantime/1000)
 
         pass
 
     def readData(self):
         """
-        Metodo para leitura dos dados do servidor MODBUS
+        Metodo para leitura dos dados do servidor MODBUS800
         """
         self._meas['timestamp'] = datetime.now()
+        for key, value in self._tags.items():
+            if self._tags[key]['info']['type'] == 'holding_registers':
+                self._meas['values'][key] = (self._modbusClient.read_holding_registers(self._tags[key]['info']['addr'], 1)[0]) / self._tags[key]['info']['mult']
+            elif self._tags[key]['info']['type'] == 'coils':
+                self._meas['values'][key] = self._modbusClient.read_coils(self._tags[key]['info']['addr'], 1)[0]
+            elif self._tags[key]['info']['type'] == 'input_register':
+                self._meas['values'][key] = (self._modbusClient.read_input_registers(self._tags[key]['info']['addr'], 1)[0])/ self._tags[key]['info']['mult']
+            elif self._tags[key]['info']['type'] == 'discrete_inputs':
+                self._meas['values'][key] = self._modbusClient.read_discrete_inputs(self._tags[key]['info']['addr'], 1)[0]
         
+
+
+    def printar_values(self):
+        print(self._meas)
         
+    

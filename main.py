@@ -6,11 +6,32 @@ class MyApp(App):
     """
     Classe do aplicativo
     """
+
+
     def build(self):
         """
         Construtor/método que gera o aplicativo com o widget principal
         """
-        self._widget = MainWidget(scantime=1000, server_ip='127.0.0.1', port=503)
+        self._widget = MainWidget(scantime=1000, server_ip='127.0.0.1', port=500,
+        modbus_addrs = {
+            'estado_mot': {'addr': 800, 'type': 'coils', 'mult': 'na'},
+            'freq_des': {'addr': 799, 'type': 'holding_registers', 'mult': 1},
+            't_part': {'addr': 798, 'type': 'holding_registers', 'mult': 10},
+            'freq_motor': {'addr': 800, 'type': 'input_register', 'mult': 10},
+            'tensao': {'addr': 801, 'type': 'input_register', 'mult': 1},
+            'rotacao' : {'addr': 803, 'type': 'input_register', 'mult': 1},
+            'pot_entrada': {'addr': 804, 'type': 'input_register', 'mult': 10},
+            'corrente': {'addr': 805, 'type': 'input_register', 'mult': 100},
+            'temp_estator': {'addr': 806, 'type': 'input_register', 'mult': 10},
+            'vz_entrada': {'addr': 807, 'type': 'input_register', 'mult': 100},
+            'nivel': {'addr': 808, 'type': 'input_register', 'mult': 10},
+            'nivel_h': {'addr': 809, 'type': 'discrete_inputs', 'mult': 'na'},
+            'nivel_l': {'addr': 810, 'type': 'discrete_inputs', 'mult': 'na'},
+            'Solenoide 1': {'addr': 801, 'type': 'coils', 'mult': 'na'},
+            'Solenoide 2': {'addr': 802, 'type': 'coils', 'mult': 'na'},
+            'Solenoide 3': {'addr': 803, 'type': 'coils', 'mult': 'na'}
+        }
+        )
         return self._widget
         
 if __name__ == '__main__': # Comando que faz com que o app abra apenas se for excutado o arquivo main diretamente

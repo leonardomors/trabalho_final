@@ -19,7 +19,7 @@
 
 
             Label:
-                text: 'SUPERVISORIO TRABALHO FINAL'
+                text: 'SUPERVISÓRIO TRABALHO FINAL'
                 font_size: 25
                 size_hint: (0.8,1)
                 halign: 'center'
@@ -32,7 +32,7 @@
                 size_hint_x: None
                 self_hint: (0.2,1)
                 Button:
-                    text: 'Conexao'
+                    text: 'Conexão'
                     on_release: root._modbusPopup.open()
                 Button:
                     text: 'ScanTime'
@@ -41,8 +41,50 @@
                 size_hint: (0.1,1)
                 id: img_com
                 source: 'imgs/desconectado.png'
-        BoxLayout:
+        FloatLayout:
             orientation: 'horizontal'
             size_hint: (1,0.9)
+            Image:
+                id: fundo
+                source: 'imgs/f1.png'
+                pos_hint: {'top':1,'right':1}
+                size: self.size
+            
             Button:
-                text:'planta'
+                id: on1
+                background_normal: 'imgs/s1.png'
+                on_release: root.atualiza_botao(self)
+                size_hint: (None, None)
+                width: 60
+                height: 59
+                pos_hint:{'top':0.71,'right':0.168}
+
+            Button:
+                id: on2
+                background_normal: 'imgs/s1.png'
+                on_release: root.atualiza_botao(self)
+                size_hint: (None, None)
+                width: 60
+                height: 59
+                pos_hint:{'top':0.55,'right':0.168}
+
+            Button:
+                id: on3
+                background_normal: 'imgs/s1.png'
+                on_release: root.atualiza_botao(self)
+                size_hint: (None, None)
+                width: 60
+                height: 59
+                pos_hint:{'top':0.41,'right':0.168}
+
+            Button:
+                id: on3
+                background_normal: 'imgs/motor.png'
+                size_hint: (None, None)
+                width: 150
+                height: 96
+                pos_hint:{'top':0.705,'right':0.90}
+        
+
+
+        
