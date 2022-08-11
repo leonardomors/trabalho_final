@@ -25,7 +25,7 @@
                 font_size: 14
             TextInput:
                 id: txt_port
-                text: "502"
+                text: "503"
                 font_size: 14
                 halign: 'center'
                 valign: 'middle'
@@ -36,12 +36,16 @@
                 height: 40
                 text: 'Conectar'
                 on_release:
+                    root.clear_info()
+                    app.root.conectar(txt_ip.text, int(txt_port.text))
+                    
                     
             Button:
                 size_hint_y: None
                 height: 40
                 text: 'FECHAR'
                 on_release:
+                    root.dismiss()
 
 <ScanPopup>:
     title: "SCAN TIME"

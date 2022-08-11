@@ -12,6 +12,16 @@ class ModbusPopup(Popup):
         self.ids.txt_ip.text = str(server_ip)
         self.ids.txt_port.text = str(port)
 
+    def set_info(self, message):
+        self._info = Label(text= str(message), font_size=15, size_hint= (1,0.3))
+        self.ids.layout.add_widget(self._info)
+
+    def clear_info(self):
+        if self._info is not None:
+            self.ids.layout.remove_widget(self._info)
+        
+
+
 class ScanPopup(Popup):
     def __init__(self,scantime, **kwargs):
         super().__init__(**kwargs)
