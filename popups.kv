@@ -68,6 +68,56 @@
         Button:
             text:'ATUALIZAR'
             on_release:
-                root.app.printar_values()
+                
 
+<MotorPopup>:
+    title: "INFORMAÇÕES DO MOTOR"
+    halign: 'center'
+    size_hint: (0.8, 0.8)
+    GridLayout:
+        cols: 2
+        rows: 7
+
+        Label:
+            text: "Frequencia de op:" 
+            font_size: 15
+        TextInput:
+            id: freq_des
+            text: ""
+            font_size: 15
+        Label:
+            text: "Ligar / Desligar motor"
+            font_size: 15
+        Button:
+            id: op_motor
+            text: "OFF"
+            font_size: 15
+        Label:
+            text: "Estado do motor: "
+        Label:
+            id:estado_mot
+            text: "-.-"
+        Label:
+            text: "Tensão de partida: "
+        Label:
+            id:t_part
+            text: "-.-"
+        Label:
+            text: "Frequência medida: "
+        Label:
+            id:estado_mot
+            text: '-.-'
+        Label:
+            text: "Rotação"
+        Label:
+            id:rotacao
+            text: "-.-"
+        Label:
+            text: "Temperatura no estator"
+        Label:
+            id:temp_estator
+            text: ''
+
+
+        
                     

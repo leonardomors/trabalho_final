@@ -78,12 +78,14 @@
                 pos_hint:{'top':0.41,'right':0.168}
 
             Button:
-                id: on3
+                id: motor
                 background_normal: 'imgs/motor.png'
                 size_hint: (None, None)
                 width: 150
                 height: 96
                 pos_hint:{'top':0.705,'right':0.90}
+                on_release:
+                    root._motorPopup.open()
         
 
 

@@ -26,3 +26,9 @@ class ScanPopup(Popup):
     def __init__(self,scantime, **kwargs):
         super().__init__(**kwargs)
         self.ids.ti_scan.text = str(scantime)
+
+class MotorPopup(Popup):
+    def __init__(self):
+        super().__init__()
+        
+        

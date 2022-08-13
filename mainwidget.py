@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
-from popups import ModbusPopup, ScanPopup
+from popups import ModbusPopup, ScanPopup, MotorPopup
 BOT = ["imgs/s1.png",'imgs/s2.png']
 
 class MainWidget(BoxLayout):
@@ -34,6 +34,7 @@ class MainWidget(BoxLayout):
         self._meas['values'] = {}
         for key, value in kwargs.get('modbus_addrs').items():
             self._tags[key] = {'info': value, 'color': [1,2,3]}
+        self._motorPopup = MotorPopup()
         
 
     def atualizar_hora(self):
@@ -77,10 +78,11 @@ class MainWidget(BoxLayout):
         try:
             while self._updateWidgt:
                 self.readData()
+                print(self._meas['values']['temp_estator'])
                 
                 # atualizar interface grafica
                 # inserir valores no BD
-                
+                sleep(self._scantime/1000)
         except  Exception as e:
             self._modbusClient.close()
             print('Erro na atualizacao de widgt: ', e.args)
