@@ -39,7 +39,7 @@ class MainWidget(BoxLayout):
             self._tags[key] = {'info': value, 'color': [1,2,3]}
         self._motorPopup = MotorPopup()
         self._inversorPopup = InversorPopup()
-        self._dataGraph = DataGraphPopup(self._max_points, plot_color=(1,0,0,1))
+        self._dataGraph = DataGraphPopup(self._max_points, plot_color=(0.5686,0.8275,0.8824,1))
 
         
 
