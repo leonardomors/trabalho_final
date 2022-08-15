@@ -30,5 +30,10 @@ class ScanPopup(Popup):
 class MotorPopup(Popup):
     def __init__(self):
         super().__init__()
+
+class InversorPopup(Popup):
+    def __init__(self):
+        super().__init__()
+
         
         

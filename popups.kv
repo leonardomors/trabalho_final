@@ -79,33 +79,44 @@
         rows: 7
 
         Label:
-            text: "Frequencia de op:" 
+            text: "Frequencia desejada:" 
             font_size: 15
         TextInput:
             id: freq_des
-            text: ""
+            text: "60"
             font_size: 15
         Label:
             text: "Ligar / Desligar motor"
             font_size: 15
-        Button:
-            id: op_motor
-            text: "OFF"
-            font_size: 15
+        BoxLayout:
+            orientation:'horizontal'
+            Button:
+                id: op_motor
+                text: 'LIGAR'
+                font_size: 15
+                on_release:
+                    app.root.ligar_motor(int(freq_des.text))
+            Button:
+                id: desop_motor
+                text: 'DESLIGAR'
+                font_size: 15
+                on_release:
+                    app.root.desligar_motor()
+
         Label:
             text: "Estado do motor: "
         Label:
             id:estado_mot
             text: "-.-"
         Label:
-            text: "Tensão de partida: "
+            text: "Tempo de partida: "
         Label:
             id:t_part
             text: "-.-"
         Label:
             text: "Frequência medida: "
         Label:
-            id:estado_mot
+            id:freq_motor
             text: '-.-'
         Label:
             text: "Rotação"
@@ -117,6 +128,30 @@
         Label:
             id:temp_estator
             text: ''
+
+<InversorPopup>:
+    title: "INFORMAÇÕES DO INVERSOR"
+    halign: 'center'
+    size_hint: (0.8, 0.8)
+    GridLayout:
+        cols: 2
+        rows: 3
+        Label:
+            text: 'Tensão na rede: '
+        Label:
+            id:tensao
+            text: '-.-'
+        Label:
+            text: 'Potência de entrada: '
+        Label:
+            id:pot_entrada
+            text: '-.-'
+        Label:
+            text: 'Corrente: '
+        Label:
+            id:corrente
+            text: '-.-'
+
 
 
         

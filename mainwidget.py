@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
-from popups import ModbusPopup, ScanPopup, MotorPopup
+from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup
 BOT = ["imgs/s1.png",'imgs/s2.png']
 
 class MainWidget(BoxLayout):
@@ -35,17 +35,10 @@ class MainWidget(BoxLayout):
         for key, value in kwargs.get('modbus_addrs').items():
             self._tags[key] = {'info': value, 'color': [1,2,3]}
         self._motorPopup = MotorPopup()
+        self._inversorPopup = InversorPopup()
+
         
 
-    def atualizar_hora(self):
-        hora = datetime.now()
-        self.ids.txt_hora.text = str(hora)[0:19]
-
-    def atualiza_botao(self, botao):
-        if botao.background_normal == BOT[0]:
-            botao.background_normal = BOT[1]
-        else:
-            botao.background_normal = BOT[0]
 
     def conectar(self, ip, port):
         """
@@ -78,11 +71,13 @@ class MainWidget(BoxLayout):
         try:
             while self._updateWidgt:
                 self.readData()
-                print(self._meas['values']['temp_estator'])
-                
-                # atualizar interface grafica
-                # inserir valores no BD
+                self.atualiza_motor()
+                self.atualizar_inversor()
                 sleep(self._scantime/1000)
+                print('tensaõ: ', self._meas['values']['tensao'])
+                print('pot_entrada: ', self._meas['values']['pot_entrada'])
+                print('corrente: ', self._meas['values']['corrente'])
+
         except  Exception as e:
             self._modbusClient.close()
             print('Erro na atualizacao de widgt: ', e.args)
@@ -110,8 +105,59 @@ class MainWidget(BoxLayout):
                 self._meas['values'][key] = self._modbusClient.read_discrete_inputs(self._tags[key]['info']['addr'], 1)[0]
         
 
+    def stopRefresh(self):
+        self._updateWidgt= False
 
-    def printar_values(self):
-        print(self._meas)
+    def atualiza_motor(self):
+        key_motor = ['estado_mot', 't_part', 'freq_motor', 'rotacao', 'temp_estator']
+        for key, value in self._meas['values'].items():
+            if key in key_motor:
+                self._motorPopup.ids[key].text = str(value)
+
+    def atualizar_inversor(self):
+        key_inversor = ['tensao', 'pot_entrada', 'corrente']
+        for key, value in self._meas['values'].items():
+            if key in key_inversor:
+                self._inversorPopup.ids[key].text = str(value)
+                
+        
+        
+
+    def operar_motor(self, freq_des):
+        if self._meas['values']['estado_mot'] == False:
+            self._modbusClient.write_single_register(799, freq_des)
+            self._modbusClient.write_single_coil(800, True)
+            self._motorPopup.ids.op_motor.text = "DESLIGAR"
+        elif self._meas['values']['estado_mot'] == True:
+            self._modbusClient.write_single_coil(800, False)
+            self._motorPopup.ids.op_motor.text = "DESLIGAR"
+
+    def ligar_motor(self, freq_des):
+
+        self._modbusClient.write_single_register(799, freq_des)
+        self._modbusClient.write_single_coil(800, True)
+
+    def desligar_motor(self):
+        self._modbusClient.write_single_coil(800, False)
+
+    def operar_solenoide(self, solenoide):
+        if solenoide == 'on1':
+            self._modbusClient.write_single_coil(801, True)
+        elif solenoide == 'on2':
+            self._modbusClient.write_single_coil(802, True)
+        elif solenoide == 'on3':
+            self._modbusClient.write_single_coil(803, True)
+
+        pass
+
+    def atualiza_botao(self, botao, address):
+        if botao.background_normal == BOT[0]:
+            botao.background_normal = BOT[1]
+            self._modbusClient.write_single_coil(int(address), True)
+
+        else:
+            botao.background_normal = BOT[0]
+            self._modbusClient.write_single_coil(int(address), False)
+
         
     

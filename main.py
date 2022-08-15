@@ -30,9 +30,18 @@ class MyApp(App):
             'Solenoide 1': {'addr': 801, 'type': 'coils', 'mult': 'na'},
             'Solenoide 2': {'addr': 802, 'type': 'coils', 'mult': 'na'},
             'Solenoide 3': {'addr': 803, 'type': 'coils', 'mult': 'na'}
-        }
+        }        
         )
         return self._widget
+
+    
+    def on_stop(self):
+        """
+        Metodo executado no encerramento da aplicação
+        """
+        self._widget.stopRefresh()
+
+        
         
 if __name__ == '__main__': # Comando que faz com que o app abra apenas se for excutado o arquivo main diretamente
     Builder.load_string(open("mainwidget.kv", encoding="utf-8").read(), rulesonly=True)
