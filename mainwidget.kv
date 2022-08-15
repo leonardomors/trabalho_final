@@ -108,6 +108,13 @@
                 source: 'imgs/tanque.png'
                 size_hint: 0.295,0.295
                 pos_hint: lb_agua.pos_hint
+            
+            Label:
+                id:nv_agua
+                font_size: 30
+                text: '-.-'
+                pos_hint: {'x': 0,'y':0.2}
+                color: (0.5686,0.8275,0.8824,1)
                 
 
             Button:
@@ -119,6 +126,19 @@
                 pos_hint:{'top':0.3,'right':0.90}
                 on_release:
                     root._inversorPopup.open()
+
+            Button:
+                id:graph
+                size_hint: (None, None)
+                size: (0.65*62, 0.65*58)
+                background_normal: 'imgs/graph_icon.jpg'
+                background_down: 'imgs/graph_icon.jpg'
+                pos_hint: {'x': 0.01, 'y': 0.08}
+                on_release:
+                    root._dataGraph.open()
+
+
+
                 
         
 

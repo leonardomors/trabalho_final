@@ -152,6 +152,76 @@
             id:corrente
             text: '-.-'
 
+<DataGraphPopup>:
+    title: "GRÁFICO"
+    halign: 'center'
+    BoxLayout:
+        orientation:'vertical'
+        TimeSeriesGraph:
+            id: graph
+            xlabel: 'Horário'
+            ylabel: 'Nivel de agua'
+            background_color: 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: 5
+            y_ticks_major: 50
+            y_grid_label: True
+            x_grid_label: True
+            padding: 5
+            x_grid: True
+            y_grid: True
+            xmin: 0
+            ymin: 0
+            ymax: 1000
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint: (1,0.05)
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (0.5, 1)
+                Label:
+                    text: 'Número de pontos'
+                    size_hint: (0.25,1)
+                    font_size: 15
+                CheckBoxDataGraph:
+                    id: mp20
+                    on_kv_post:
+                        self.ids.label.text = '20'
+                        self.ids.checkbox.group = 'cv_group'
+                        self.ids.checkbox.active = True
+                CheckBoxDataGraph:
+                    id: mp50
+                    on_kv_post:
+                        self.ids.label.text = '50'
+                        self.ids.checkbox.group = 'cv_group'
+                CheckBoxDataGraph:
+                    id: mp100
+                    on_kv_post:
+                        self.ids.label.text = '100'
+                        self.ids.checkbox.group = 'cv_group'
+            Button:
+                text:"Fechar"
+                size_hint: (0.2,1)
+                on_release:
+                    root.dismiss()
+                
+
+<CheckBoxDataGraph>:
+    orientation: 'horizontal'
+    size_hint: (0.1,1)
+    CheckBox:
+        id: checkbox
+        on_active: app.root._dataGraph.ids.graph.setMaxPoints(int(label.text), 0) if app.root is not None else None
+    Label:
+        id:label
+
+
+
+
+
+
+
+
 
 
         

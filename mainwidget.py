@@ -3,13 +3,16 @@ from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
-from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup
+from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup, DataGraphPopup
+from timeseriesgraph import TimeSeriesGraph
+
 BOT = ["imgs/s1.png",'imgs/s2.png']
 
 class MainWidget(BoxLayout):
     _updateThread = None
     _updateWidgt = True
     _tags = []
+    _max_points = 20
 
     """
     Classe do widget principal da aplicacao
@@ -36,6 +39,7 @@ class MainWidget(BoxLayout):
             self._tags[key] = {'info': value, 'color': [1,2,3]}
         self._motorPopup = MotorPopup()
         self._inversorPopup = InversorPopup()
+        self._dataGraph = DataGraphPopup(self._max_points, plot_color=(1,0,0,1))
 
         
 
@@ -129,7 +133,10 @@ class MainWidget(BoxLayout):
         ## Atualizacao do tanque de agua
 
         self.ids.lb_agua.size = (self.ids.lb_agua.size[0], self._meas['values']['nivel']/1000*self.ids.tanque.size[1])
+        self.ids.nv_agua.text = str(self._meas['values']['nivel']) + ' litros'
 
+        ## Atualizacao do grafico
+        self._dataGraph.ids.graph.updateGraph((self._meas['timestamp'], self._meas['values']['nivel']),0)
 
 
     # def atualiza_motor(self):
