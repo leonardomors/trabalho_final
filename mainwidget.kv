@@ -91,6 +91,25 @@
                 on_release:
                     root._motorPopup.open()
 
+            Label:
+                id: lb_agua
+                size_hint: (None, None)
+                size: (tanque.size[0]*0.83, tanque.size[1]*0.9)
+                pos_hint: {'x':0.35,'y':0.35}
+                canvas:
+                    Color:
+                        rgb: 0.5686,0.8275,0.8824
+                    Rectangle:
+                        size: self.size
+                        pos: (self.pos[0]+self.width*0.1,self.pos[1])
+                        
+            Image:
+                id: tanque
+                source: 'imgs/tanque.png'
+                size_hint: 0.295,0.295
+                pos_hint: lb_agua.pos_hint
+                
+
             Button:
                 id: inversor
                 text: 'INVERSOR'

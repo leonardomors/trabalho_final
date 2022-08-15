@@ -71,12 +71,14 @@ class MainWidget(BoxLayout):
         try:
             while self._updateWidgt:
                 self.readData()
-                self.atualiza_motor()
-                self.atualizar_inversor()
+                # self.atualiza_motor()
+                # self.atualizar_inversor()
+                self.updateGUI()
                 sleep(self._scantime/1000)
-                print('tensaõ: ', self._meas['values']['tensao'])
-                print('pot_entrada: ', self._meas['values']['pot_entrada'])
-                print('corrente: ', self._meas['values']['corrente'])
+                # print('tensaõ: ', self._meas['values']['tensao'])
+                # print('pot_entrada: ', self._meas['values']['pot_entrada'])
+                # print('corrente: ', self._meas['values']['corrente'])
+                # self.ids.lb_agua.size(self.ids.lb_agua.size[0], self._meas['values']['nivel']/100*self.ids.tanque.size[1])
 
         except  Exception as e:
             self._modbusClient.close()
@@ -108,20 +110,40 @@ class MainWidget(BoxLayout):
     def stopRefresh(self):
         self._updateWidgt= False
 
-    def atualiza_motor(self):
+    def updateGUI(self):
+        """
+        Método que atualiza as interfaces gráficas em geral
+        """
+        ## Atualização do Popup do motor:
         key_motor = ['estado_mot', 't_part', 'freq_motor', 'rotacao', 'temp_estator']
         for key, value in self._meas['values'].items():
             if key in key_motor:
                 self._motorPopup.ids[key].text = str(value)
 
-    def atualizar_inversor(self):
+        ## Atualização do Popup do inversor:
         key_inversor = ['tensao', 'pot_entrada', 'corrente']
         for key, value in self._meas['values'].items():
             if key in key_inversor:
                 self._inversorPopup.ids[key].text = str(value)
+        
+        ## Atualizacao do tanque de agua
+
+        self.ids.lb_agua.size = (self.ids.lb_agua.size[0], self._meas['values']['nivel']/1000*self.ids.tanque.size[1])
+
+
+
+    # def atualiza_motor(self):
+    #     key_motor = ['estado_mot', 't_part', 'freq_motor', 'rotacao', 'temp_estator']
+    #     for key, value in self._meas['values'].items():
+    #         if key in key_motor:
+    #             self._motorPopup.ids[key].text = str(value)
+
+    # def atualizar_inversor(self):
+    #     key_inversor = ['tensao', 'pot_entrada', 'corrente']
+    #     for key, value in self._meas['values'].items():
+    #         if key in key_inversor:
+    #             self._inversorPopup.ids[key].text = str(value)
                 
-        
-        
 
     def operar_motor(self, freq_des):
         if self._meas['values']['estado_mot'] == False:
@@ -158,6 +180,5 @@ class MainWidget(BoxLayout):
         else:
             botao.background_normal = BOT[0]
             self._modbusClient.write_single_coil(int(address), False)
-
         
-    
+        
