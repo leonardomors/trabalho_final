@@ -3,8 +3,9 @@ from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
-from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup, DataGraphPopup
+from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup, DataGraphPopup, HistGraphPopup
 from timeseriesgraph import TimeSeriesGraph
+from bdhandler import BDHandler
 
 BOT = ["imgs/s1.png",'imgs/s2.png']
 
@@ -40,6 +41,8 @@ class MainWidget(BoxLayout):
         self._motorPopup = MotorPopup()
         self._inversorPopup = InversorPopup()
         self._dataGraph = DataGraphPopup(self._max_points, plot_color=(0.5686,0.8275,0.8824,1))
+        self._hgraph = HistGraphPopup(tags = self._tags)
+        self._bd = BDHandler(kwargs.get('db_path'), self._tags)
 
         
 
@@ -75,14 +78,11 @@ class MainWidget(BoxLayout):
         try:
             while self._updateWidgt:
                 self.readData()
-                # self.atualiza_motor()
-                # self.atualizar_inversor()
+                # self._bd.insertData(self._meas)
+                print('timestamp, ' + ','.join(self._meas['values'].keys()))
+                print(str(self._meas['timestamp']) + ', ' +','.join(str(self._meas['values'][k]) for k in self._meas['values'].keys()))
                 self.updateGUI()
                 sleep(self._scantime/1000)
-                # print('tensaõ: ', self._meas['values']['tensao'])
-                # print('pot_entrada: ', self._meas['values']['pot_entrada'])
-                # print('corrente: ', self._meas['values']['corrente'])
-                # self.ids.lb_agua.size(self.ids.lb_agua.size[0], self._meas['values']['nivel']/100*self.ids.tanque.size[1])
 
         except  Exception as e:
             self._modbusClient.close()

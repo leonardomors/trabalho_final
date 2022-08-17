@@ -46,7 +46,18 @@ class DataGraphPopup(Popup):
 class CheckBoxDataGraph(BoxLayout):
     pass
 
+class HistGraphPopup(Popup):
+    def __init__(self, **kwargs):
+        super().__init__()
+        for key, value in kwargs.get('tags').items():
+            cb = CheckBoxHistGraph()
+            cb.ids.label.text = key
+            cb.ids.label.color = (0.5686,0.8275,0.8824,1)
+            cb.id = key
+            self.ids.sensores.add_widget(cb)
 
+class CheckBoxHistGraph(BoxLayout):
+    pass
 
         
         

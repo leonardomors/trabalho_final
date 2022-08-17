@@ -216,6 +216,74 @@
         id:label
 
 
+<HistGraphPopup>:
+    title: "HISTÓRICO DE INFORMAÇÕES"
+    halign: 'center'
+    BoxLayout:
+        orientation:'vertical'
+        TimeSeriesGraph:
+            id: graph
+            xlabel: 'Horário'
+            ylabel: 'Nivel de agua'
+            background_color: 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: 5
+            y_ticks_major: 50
+            y_grid_label: True
+            x_grid_label: True
+            padding: 5
+            x_grid: True
+            y_grid: True
+            xmin: 0
+            ymin: 0
+            ymax: 1000
+
+        BoxLayout:
+            id: sensores
+            orientation:'horizontal'
+            size_hint: (1, 0.1)
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (0.5, 1)
+            Label:
+                text: 'Timestamp inicial \r\n [size=12] (DD/MM/AAAA HH:MM:SS) [/size]'
+                halign: 'center'
+                markup: True
+            TextInput:
+                id: txt_init_time
+                size_hint: (1, 0.8)
+                haling: 'center'
+                valign: 'middle'
+                multiline: False
+            
+            Label:
+                text: 'Timestamp final \r\n [size=12] (DD/MM/AAAA HH:MM:SS) [/size]'
+                halign: 'center'
+                markup: True
+
+            TextInput:
+                id: txt_final_time
+                size_hint: (1, 0.8)
+                haling: 'center'
+                valign: 'middle'
+                multiline: False
+
+            Button:
+                text:"Fechar"
+                size_hint: (0.2,1)
+                on_release:
+                    root.dismiss()
+
+<CheckBoxHistGraph>:
+    orientation: 'horizontal'
+    size_hint: (0.05,1)
+    CheckBox:
+        id: checkbox
+        on_active: None
+    Label:
+        id:label
+
 
 
 
