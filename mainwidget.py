@@ -15,6 +15,7 @@ class MainWidget(BoxLayout):
     _updateWidgt = True
     _tags = []
     _max_points = 20
+    _controle_automatico = False
 
     """
     Classe do widget principal da aplicacao
@@ -244,24 +245,34 @@ class MainWidget(BoxLayout):
         """
         Método que implementa o controle de nível automatico
         :param setpoint: Setpoint do controle de nivel setado pelo usuario, ao atingir esse nivel de agua o motor deve ligar
-        :param histerese: Após atingido o setpoint o motor ficará ligado enchendo o tanque até um valor definido, da seguinte forma:
-            sabendo que o sensor de nivel alto está na marca de 950litros, o calculo é: x = 950 - setpoint. A histerese fornecida pelo usuario
-            está em % desse valor de x
+        :param histerese: Atraso em litros para desligar o motor após atingido o valor do setpoint
         """
         setpoint = int(self._controlePopup.ids.setpoint.text)
-        x = 950 - setpoint
-        histerese = ((int(self._controlePopup.ids.histerese.text))/100) * x
-        self._automatico = None
+        histerese = int(self._controlePopup.ids.histerese.text)
+        x = setpoint + histerese
+        
 
-        if self._automatico:
+        if self._controle_automatico:
             print('Controle automatico ativado! ')
+            
+            
             if self._meas['values']['nivel'] < setpoint:
                 self._modbusClient.write_single_coil(800, True)
                 print('Motor ligado!')
-                if self._meas['values']['nivel'] == histerese:
-                    self._modbusClient.write_single_coil(800, True)
+                if self._meas['values']['nivel'] >= x:
+                    self._modbusClient.write_single_coil(800, False)
+                    print('histerese atingida, desligando o motor')
+                    self._controle_automatico = False
+
         else:
             pass
+
+    def ativarControleAutomatico(self):
+        self._controle_automatico = True
+
+    def desativarControleAutomatico(self):
+        self._controle_automatico = False
+        self._modbusClient.write_single_coil(800, False)
         
 
 
