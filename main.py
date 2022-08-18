@@ -12,7 +12,7 @@ class MyApp(App):
         """
         Construtor/método que gera o aplicativo com o widget principal
         """
-        self._widget = MainWidget(scantime=1000, server_ip='127.0.0.1', port=500,
+        self._widget = MainWidget(scantime=1000, server_ip='127.0.0.1', port=506,
         modbus_addrs = {
             'estado_mot': {'addr': 800, 'type': 'coils', 'mult': 'na'},
             'freq_des': {'addr': 799, 'type': 'holding_registers', 'mult': 1},
@@ -31,7 +31,7 @@ class MyApp(App):
             'Solenoide 2': {'addr': 802, 'type': 'coils', 'mult': 'na'},
             'Solenoide 3': {'addr': 803, 'type': 'coils', 'mult': 'na'}
         },
-        db_path = "C:\\Users\\leomo\\Pictures\\trabalho_final 11-08\\camila_15-05\\db\\scada.db",     
+        db_path = "/home/juliane/Documentos/trabalho_final-main/db/scada.db" 
         )
         return self._widget
 

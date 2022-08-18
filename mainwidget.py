@@ -3,9 +3,10 @@ from kivy.uix.boxlayout import BoxLayout
 from pyModbusTCP.client import ModbusClient
 from threading import Thread
 from datetime import datetime
-from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup, DataGraphPopup, HistGraphPopup
+from popups import ModbusPopup, ScanPopup, MotorPopup, InversorPopup, DataGraphPopup, HistGraphPopup, ControlePopup
 from timeseriesgraph import TimeSeriesGraph
 from bdhandler import BDHandler
+from kivy_garden.graph import LinePlot
 
 BOT = ["imgs/s1.png",'imgs/s2.png']
 
@@ -34,15 +35,27 @@ class MainWidget(BoxLayout):
         self._scanPopup = ScanPopup(scantime = self._scantime)
         self._modbusClient = ModbusClient(self._ip, self._port)
         self._meas = {}
+        self._measn = {}
+        self._tagsn = {}
         self._meas['timestamp'] = None
         self._meas['values'] = {}
         for key, value in kwargs.get('modbus_addrs').items():
             self._tags[key] = {'info': value, 'color': [1,2,3]}
+        self._tagsn = self._tags
+        del self._tagsn['estado_mot']
+        del self._tagsn['Solenoide 1']
+        del self._tagsn['Solenoide 2']
+        del self._tagsn['Solenoide 3']
+
         self._motorPopup = MotorPopup()
         self._inversorPopup = InversorPopup()
         self._dataGraph = DataGraphPopup(self._max_points, plot_color=(0.5686,0.8275,0.8824,1))
         self._hgraph = HistGraphPopup(tags = self._tags)
-        self._bd = BDHandler(kwargs.get('db_path'), self._tags)
+        self._bd = BDHandler(kwargs.get('db_path'), self._tagsn)
+        self._measn['timestamp'] = {}
+        self._measn['values'] = {}
+        self._measn = self._meas
+        self._controlePopup = ControlePopup()
 
         
 
@@ -78,9 +91,12 @@ class MainWidget(BoxLayout):
         try:
             while self._updateWidgt:
                 self.readData()
-                # self._bd.insertData(self._meas)
-                print('timestamp, ' + ','.join(self._meas['values'].keys()))
-                print(str(self._meas['timestamp']) + ', ' +','.join(str(self._meas['values'][k]) for k in self._meas['values'].keys()))
+                self._bd.insertData(self._measn)
+                # print('timestamp, ' + ','.join(self._meas['values'].keys()))
+                # print(str(self._meas['timestamp']) + ', ' +','.join(str(self._meas['values'][k]) for k in self._meas['values'].keys()))
+                # print(self._tags)
+                self.controleNivel()
+                # print(self._measn)
                 self.updateGUI()
                 sleep(self._scantime/1000)
 
@@ -103,6 +119,7 @@ class MainWidget(BoxLayout):
         for key, value in self._tags.items():
             if self._tags[key]['info']['type'] == 'holding_registers':
                 self._meas['values'][key] = (self._modbusClient.read_holding_registers(self._tags[key]['info']['addr'], 1)[0]) / self._tags[key]['info']['mult']
+            
             elif self._tags[key]['info']['type'] == 'coils':
                 self._meas['values'][key] = self._modbusClient.read_coils(self._tags[key]['info']['addr'], 1)[0]
             elif self._tags[key]['info']['type'] == 'input_register':
@@ -110,6 +127,8 @@ class MainWidget(BoxLayout):
             elif self._tags[key]['info']['type'] == 'discrete_inputs':
                 self._meas['values'][key] = self._modbusClient.read_discrete_inputs(self._tags[key]['info']['addr'], 1)[0]
         
+        
+
 
     def stopRefresh(self):
         self._updateWidgt= False
@@ -138,19 +157,6 @@ class MainWidget(BoxLayout):
         ## Atualizacao do grafico
         self._dataGraph.ids.graph.updateGraph((self._meas['timestamp'], self._meas['values']['nivel']),0)
 
-
-    # def atualiza_motor(self):
-    #     key_motor = ['estado_mot', 't_part', 'freq_motor', 'rotacao', 'temp_estator']
-    #     for key, value in self._meas['values'].items():
-    #         if key in key_motor:
-    #             self._motorPopup.ids[key].text = str(value)
-
-    # def atualizar_inversor(self):
-    #     key_inversor = ['tensao', 'pot_entrada', 'corrente']
-    #     for key, value in self._meas['values'].items():
-    #         if key in key_inversor:
-    #             self._inversorPopup.ids[key].text = str(value)
-                
 
     def operar_motor(self, freq_des):
         if self._meas['values']['estado_mot'] == False:
@@ -187,5 +193,80 @@ class MainWidget(BoxLayout):
         else:
             botao.background_normal = BOT[0]
             self._modbusClient.write_single_coil(int(address), False)
+
+    def getDataDB(self):
+        """
+        Método que realiza coleta das informacoes fornecidas pelo usuario
+        """
+        try:
+            init_t = self.parseDTString(self._hgraph.ids.txt_init_time.text)
+            final_t = self.parseDTString(self._hgraph.ids.txt_final_time.text)
+            cols = []
+            for sensor in self._hgraph.ids.sensores.children:
+                if sensor.ids.checkbox.active:
+                    cols.append(sensor.id)
+            if init_t is None or final_t is None or len(cols)==0:
+                return
+
+            cols.append('timestamp')
+            dados = self._bd.selectData(cols, init_t, final_t)
+
+            if dados is None or len(dados['timestamp'])==0:
+                return
+
+            self._hgraph.ids.graph.clearPlots()
+            for key, value in dados.items():
+                if key == 'timestamp':
+                    continue
+                p = LinePlot(line_width = 1.5, color = (0.5686,0.8275,0.8824,1))
+                p.points = [(x, value[x]) for x in range(0, len(value))]
+                self._hgraph.ids.graph.add_plot(p)
+
+            self._hgraph.ids.graph.xmax = len(dados[cols[0]])
+            self._hgraph.ids.graph.update_x_labels([datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f") for x in dados['timestamp']])
+
+        except Exception as e:
+            print("erro na L229: ", e.args)
+
+
+
+    def parseDTString(self, datetime_str):
+        """
+        converte a string inserida no mecanismo de pesquisa para o formato correto de consulta no Bd
+        """
+        try:
+            d = datetime.strptime(datetime_str, '%d/%m/%Y %H:%M:%S')
+            return d.strftime("%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            print("Erro na L213: ", e.args)
+
+    def controleNivel(self):
+        """
+        Método que implementa o controle de nível automatico
+        :param setpoint: Setpoint do controle de nivel setado pelo usuario, ao atingir esse nivel de agua o motor deve ligar
+        :param histerese: Após atingido o setpoint o motor ficará ligado enchendo o tanque até um valor definido, da seguinte forma:
+            sabendo que o sensor de nivel alto está na marca de 950litros, o calculo é: x = 950 - setpoint. A histerese fornecida pelo usuario
+            está em % desse valor de x
+        """
+        setpoint = int(self._controlePopup.ids.setpoint.text)
+        x = 950 - setpoint
+        histerese = ((int(self._controlePopup.ids.histerese.text))/100) * x
+        self._automatico = None
+
+        if self._automatico:
+            print('Controle automatico ativado! ')
+            if self._meas['values']['nivel'] < setpoint:
+                self._modbusClient.write_single_coil(800, True)
+                print('Motor ligado!')
+                if self._meas['values']['nivel'] == histerese:
+                    self._modbusClient.write_single_coil(800, True)
+        else:
+            pass
+        
+
+
+
+
+
         
         

@@ -224,7 +224,7 @@
         TimeSeriesGraph:
             id: graph
             xlabel: 'Horário'
-            ylabel: 'Nivel de agua'
+            ylabel: 'Medição'
             background_color: 0.5,0.5,0.5,0.5
             x_ticks_minor: 1
             x_ticks_major: 5
@@ -245,7 +245,7 @@
 
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: (0.5, 1)
+            size_hint: (1, 0.1)
             Label:
                 text: 'Timestamp inicial \r\n [size=12] (DD/MM/AAAA HH:MM:SS) [/size]'
                 halign: 'center'
@@ -280,9 +280,45 @@
     size_hint: (0.05,1)
     CheckBox:
         id: checkbox
-        on_active: None
+        on_active: app.root.getDataDB()
     Label:
         id:label
+        font_size: 12
+        bold: True
+
+<ControlePopup>:
+    orientation: 'vertical'
+    size_hint: (0.8, 0.8)
+    tittle: 'Configuração do Controle automático'
+    halign: 'center'
+    GridLayout:
+        cols: 2
+        rows: 3
+        halign: 'center'
+        valign: 'middle'
+        Label:
+            text: 'SetPoint: '
+        TextInput:
+            id: setpoint
+            halign: 'center'
+            valign: 'middle'
+            text: '950'
+        Label:
+            text: 'Histerese [%]: '
+        TextInput:
+            id: histerese
+            halign: 'center'
+            valign: 'middle'
+            text: '100'
+        Button:
+            text:'Ativar'
+            on_release: app.root.controleNivel._automatico = True
+        Button:
+            text: 'Desativar'
+            on_release: app.root.controleNivel._automatico = False
+            
+
+
 
 
 

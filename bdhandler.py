@@ -44,14 +44,13 @@ class BDHandler():
             self._lock.acquire()
             self._cursor.execute(sql_str)
             self._con.commit() # Implementa as alterações no banco.
+            self._lock.release()
           
                          
             
         except Exception as e:
             print("Erro na parte SQL: ", e.args)
-
-        finally:
-            self._lock.release()
+            
 
     def insertData(self, data):
         """
@@ -87,7 +86,7 @@ class BDHandler():
                 for d in range(0, len(linha)):
                     dados[cols[d]].append(linha[d])
                     
-            self._lock.release()
+            
             return dados
 
         except Exception as e:

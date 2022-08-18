@@ -59,5 +59,9 @@ class HistGraphPopup(Popup):
 class CheckBoxHistGraph(BoxLayout):
     pass
 
+
+class ControlePopup(Popup):
+    pass
+
         
         
